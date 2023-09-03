@@ -1,0 +1,10 @@
+.normal{
+    cursor: pointer;
+}
+.normal:hover{
+    background-image: linear-gradient(to left, #F27F0C, #f2f2f2);
+}
+.current{
+    cursor: pointer;
+    background-image: linear-gradient(to left, #F27F0C, #f2f2f2);
+}
