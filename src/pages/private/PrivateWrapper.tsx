@@ -7,7 +7,7 @@ function PrivateWrapper() {
     return (
         <>
             <Row className={"m-0 p-0 h-100 w-100 "}>
-                <Col className={"shadow-sm position-fixed h-100 d-lg-block d-none"} style={{background:"#fafcfc"}} lg={2} >
+                <Col className={"shadow-sm position-fixed h-100 d-lg-block d-none z-3"} style={{background:"#fafcfc"}} lg={2} >
                     <SideBar></SideBar>
                 </Col>
                 <Col lg={{span:10,offset:2}} xs={12} >

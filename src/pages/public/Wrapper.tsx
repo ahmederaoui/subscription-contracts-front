@@ -8,6 +8,7 @@ import {MfaContext, useMfaState} from "../../contexts/RegistrationContext.ts";
 function Wrapper() {
     const mfaState = useMfaState();
     return (
+
         <MfaContext.Provider value={mfaState}>
             <div >
                     <Row className={"my-3 d-flex justify-content-center align-content-center"}>

@@ -8,6 +8,7 @@ import {axiosPublic} from "../../api/Axios.ts";
 import {useNavigate} from "react-router-dom";
 import {AxiosResponse} from "axios";
 import {MfaContext} from "../../contexts/RegistrationContext.ts";
+import useAuth from "../../hooks/useAuth.ts";
 
 function Register() {
     const fnRef = useRef();
@@ -226,12 +227,12 @@ function Register() {
 
                     <Row className="mx-1 my-3 ">
                         <Button className={validfn && validln && validemail && validagency && validphone && validPwd && validMatch?"":"disabled"} variant="primary text-white" type="submit">
-                            LOGIN
+                            Sign Up
                         </Button>
                     </Row>
                     <Row className="my-3 d-flex justify-content-center">
                         <small className="" >
-                            Already have account,<a onClick={()=>navigate("/login")} className={"ms-1 pointer-event"}>login.</a>
+                            Already have account,<a style={{cursor:"pointer"}} onClick={()=>navigate("/login")} className={"ms-1 pointer-event"}>login.</a>
                         </small>
                     </Row>
                 </Form>

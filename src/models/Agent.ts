@@ -1,4 +1,5 @@
 export interface Agent {
+    id:string
     firstname: string
     lastname: string
     email: string

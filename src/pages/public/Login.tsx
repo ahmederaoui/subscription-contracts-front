@@ -1,17 +1,21 @@
 import {Alert, Button, Col, FloatingLabel, Form, Row} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import {axiosPublic} from "../../api/Axios.ts";
 import jwtDecode from "jwt-decode";
-import {AuthData} from "../../models/Agent.ts";
-import {AuthContext} from "../../contexts/AuthContext.ts";
+import useAuth from "../../hooks/useAuth.ts";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate.tsx";
+import {AgentContext} from "../../contexts/AgentContext.ts";
+import {Agent} from "../../models/Agent.ts";
 
 
 function Login(){
     const [errMsg, setErrMsg] = useState<string>('');
 
-    const [authState,setAuthState] = useContext<AuthData>(AuthContext);
+    const {auth, setAuth} = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
     const emailRef = useRef();
 
     const [email, setEmail] = useState<string>('');
@@ -23,10 +27,15 @@ function Login(){
     const [totp, setTotp] = useState<string>('');
     const [validTotp, setValidtotp] = useState<boolean>(false);
 
+    const axios = useAxiosPrivate();
+    const [agentState,setAgentState] = useContext(AgentContext);
+
     useEffect(()=>{
         emailRef.current.focus();
+
     },[])
     useEffect(()=>{
+        console.log(auth)
         setValidEmail(email.length>5);
     },[email])
     useEffect(()=>{
@@ -45,20 +54,27 @@ function Login(){
                 password: pwd
             })
             if(!res.data.accessToken) throw Error("Email or password is incorrect")
-            const decodedJWT=jwtDecode(res.data.accessToken);
-            setAuthState({...authState,
+            const decodedJWT= jwtDecode(res.data.accessToken);
+            setAuth({...auth,
                 isAuthenticated: true,
                 username:decodedJWT.sub,
                 role : decodedJWT.scope,
             token : res.data.accessToken});
+            if (auth?.isAuthenticated){
+                const response = await axios.get<Agent>(`USERS-SERVICE/api/agents/email/${auth?.username}`)
+                setAgentState(response.data)
+                navigate(from, { replace: true });
+            }
+
         }catch (error){
-            setAuthState({...authState,
+            setAuth({...auth,
                 isAuthenticated : false,
                 username :null,
                 role : null,
                 token : null})
             setErrMsg(error.message);
         }
+        console.log(auth)
     }
 
     return (
@@ -124,7 +140,7 @@ function Login(){
                         </Row>
                         <Row className="my-3 d-flex justify-content-center">
                             <small className="" >
-                                You don't have account,<a  onClick={()=>navigate("/register")} className={"ms-1"} >sign up.</a>
+                                You don't have account,<a style={{cursor:"pointer"}} onClick={()=>navigate("/register")} className={"ms-1"} >sign up.</a>
                             </small>
                         </Row>
                     </Form>
